@@ -1,6 +1,9 @@
 data/*
 !data/question_embedding.json
 
+openai_api.env
+pgvector_db.env
+
 TASK.md
 
 ### Pyhton Project template
