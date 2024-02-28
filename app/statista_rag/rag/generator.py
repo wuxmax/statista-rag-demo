@@ -12,15 +12,17 @@ class Generator:
     You are an assistant for question-answering tasks. 
     """
 
-    #     Add a reference to the context pieces to the relevant parts of your answer.
-    #     The references should be added in square brackets after a sentence, like so: [1]
-
     _RAG_PROMPT: str = """
     Answer the following question. 
     Use only the pieces of retrieved context to answer the question.
-    If you cannot answer the question based ont the provided context, then say so.
+    You do not have to use all of the context pieces to answer the question.
     Be as specific and as concise as possible while answering the question.
-    
+    The context pieces are sorted by relevance, with the most relevant piece first.
+    Add a reference to a context piece to the parts of your answer, that are based on it.
+    The references should be added in square brackets after a sentence, like so: [0]
+    Do not repeat the pieces of context in your answer. Do not create a reference section.
+    If you cannot answer the question based on the provided context, then say so.
+
     Question: {question}
     Context Pieces: {context}
     """
