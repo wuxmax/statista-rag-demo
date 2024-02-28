@@ -1,0 +1,7 @@
+pgpvector
+psycopg2-binary
+loguru
+openai
+pydantic-settings
+sqlmodel
+typer[all]
