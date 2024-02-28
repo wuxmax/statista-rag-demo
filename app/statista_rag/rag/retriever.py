@@ -3,16 +3,14 @@ from sqlalchemy import Engine
 from sqlmodel import Session, create_engine, select
 from sqlmodel.sql.expression import Select
 
-from statista_rag.config import PGVectorDBConnection
+from statista_rag.config import PGVectorDBConfig
 from statista_rag.models.data import TextEmbeddingMap, TextEmbedding
 from statista_rag.utils import load_text_embeddings
 
 
 class Retriever:
-    db_connection: PGVectorDBConnection
-    db_engine: Engine
-
-    test_question_embeddings: TextEmbeddingMap
+    _db_connection: PGVectorDBConfig
+    _db_engine: Engine
 
     _TOP_K_RESULTS: int = 5
     _DISTANCE_MEASURES: list[str] = [
@@ -21,9 +19,11 @@ class Retriever:
         "max_inner_product"
     ]
 
+    test_question_embeddings: TextEmbeddingMap
+
     def __init__(self):
-        self.db_connection = PGVectorDBConnection()
-        self.db_engine = create_engine(self.db_connection.connection_string)
+        self._db_connection = PGVectorDBConfig()
+        self._db_engine = create_engine(self._db_connection.connection_string)
         self.test_question_embeddings = load_text_embeddings()
 
     def retrieve_context(self, question: str) -> list[TextEmbedding] | None:
@@ -47,7 +47,7 @@ class Retriever:
 
         distance_measure = getattr(TextEmbedding.embedding_vector, distance_measure_name)
 
-        with Session(self.db_engine) as session:
+        with Session(self._db_engine) as session:
             statement: Select = select(TextEmbedding).order_by(distance_measure(embedding)).limit(self._TOP_K_RESULTS)
             similarity_search_results: list[TextEmbedding] = session.exec(statement).all()
 
