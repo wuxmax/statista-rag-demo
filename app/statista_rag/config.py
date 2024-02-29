@@ -33,9 +33,16 @@ class RetrieverConfig(BaseModel):
     top_k_results: int
 
 
+class AugmentationConfig(BaseModel):
+    context_separator: str
+    use_only_last_context_part: bool
+    statista_content_base_url: str
+
+
 class RAGConfig(BaseSettings):
     generator_config: GeneratorConfig
     retriever_config: RetrieverConfig
+    augmentation_config: AugmentationConfig
     model_config = SettingsConfigDict(yaml_file=app_settings.rag_config_file_path)
 
     @classmethod

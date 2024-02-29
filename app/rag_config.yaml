@@ -1,9 +1,22 @@
 generator_config:
   system_prompt: "You are an assistant for question-answering tasks."
+  #  rag_prompt: "
+  #    Answer the following question.
+  #    Use only the pieces of retrieved context to answer the question.
+  #    You do not have to use all of the context pieces to answer the question.
+  #    Be as specific and as concise as possible while answering the question.
+  #    The context pieces are sorted by relevance, with the most relevant piece first.
+  #    Add a reference to a context piece to the parts of your answer, that are based on it.
+  #    The references should be added in square brackets after a sentence, like so: [0]
+  #    Do not repeat the pieces of context in your answer. Do not create a reference section.
+  #    If you cannot answer the question based on the provided context, then say so.
+  #
+  #    Question: {question}
+  #    Context Pieces: {context}
+  #    "
   rag_prompt: "
     Answer the following question. 
     Use only the pieces of retrieved context to answer the question.
-    You do not have to use all of the context pieces to answer the question.
     Be as specific and as concise as possible while answering the question.
     The context pieces are sorted by relevance, with the most relevant piece first.
     Add a reference to a context piece to the parts of your answer, that are based on it.
@@ -19,3 +32,7 @@ retriever_config:
   embedding_vector_length: 1536
   distance_measure: "max_inner_product"
   top_k_results: 5
+augmentation_config:
+  context_separator: '#'
+  use_only_last_context_part: true
+  statista_content_base_url: "https://www.statista.com/statistics"

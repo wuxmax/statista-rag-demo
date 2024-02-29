@@ -5,7 +5,7 @@ from loguru import logger
 from statista_rag.models.data import TextEmbedding, RAGResponse
 from statista_rag.rag.generator import Generator
 from statista_rag.rag.retriever import Retriever
-from statista_rag.rag.text_utils import create_context, create_references
+from statista_rag.rag.augmentation import create_context, create_references
 
 
 class RAGPipeline:
