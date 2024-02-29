@@ -55,7 +55,7 @@ OPENAI_API_KEY="xxx"
 OPENAI_API_MODEL="mistral:7b-instruct-v0.2-q8_0"
 ```
 The `OPENAI_API_BASE_URL` parameter is optional and default to the actual OpenAI API endpoint.  
-The `0PENAI_API_MODEL` parameter must be set to a model that is available at the specified endpoint.
+The `OPENAI_API_MODEL` parameter must be set to a model that is available at the specified endpoint.
 
 ## Run the app
 The app can be run with the following command from the project root directory:
