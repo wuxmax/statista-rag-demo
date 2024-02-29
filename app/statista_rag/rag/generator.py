@@ -1,47 +1,35 @@
+from loguru import logger
 from openai import OpenAI
 from openai.types.chat import ChatCompletion, ChatCompletionSystemMessageParam, ChatCompletionUserMessageParam
 
-from statista_rag.config import OpenAIAPIConfig
+from statista_rag.config import app_settings, rag_config, openai_api_config
 
 
 class Generator:
-    _openai_api_config: OpenAIAPIConfig
     _llm_client: OpenAI
+    _model: str
 
-    _SYSTEM_PROMPT: str = """
-    You are an assistant for question-answering tasks. 
-    """
+    _system_prompt: str = rag_config.generator_config.system_prompt
+    _rag_prompt: str = rag_config.generator_config.rag_prompt
 
-    _RAG_PROMPT: str = """
-    Answer the following question. 
-    Use only the pieces of retrieved context to answer the question.
-    You do not have to use all of the context pieces to answer the question.
-    Be as specific and as concise as possible while answering the question.
-    The context pieces are sorted by relevance, with the most relevant piece first.
-    Add a reference to a context piece to the parts of your answer, that are based on it.
-    The references should be added in square brackets after a sentence, like so: [0]
-    Do not repeat the pieces of context in your answer. Do not create a reference section.
-    If you cannot answer the question based on the provided context, then say so.
-
-    Question: {question}
-    Context Pieces: {context}
-    """
-
-    def __init__(self):
-        self._openai_api_config = OpenAIAPIConfig()
-
+    def __init__(self, model: str = None):
         self.llm_client = OpenAI(
-            base_url=self._openai_api_config.base_url,
-            api_key=self._openai_api_config.key
+            base_url=openai_api_config.base_url,
+            api_key=openai_api_config.key
         )
 
-    def query_llm(self, query: str):
+        self._model = model if model else openai_api_config.model
+
+    def _query_llm(self, query: str, verbose: bool = False):
+        if verbose:
+            logger.info(f"Querying model '{self._model}' with:\n{query}")
+
         response: ChatCompletion = self.llm_client.chat.completions.create(
-            model=self._openai_api_config.model,
+            model=self._model,
             messages=[
                 ChatCompletionSystemMessageParam(
                     role="system",
-                    content=self._SYSTEM_PROMPT
+                    content=self._system_prompt
                 ),
                 ChatCompletionUserMessageParam(
                     role="user",
@@ -51,9 +39,14 @@ class Generator:
         )
         return response.choices[0].message.content
 
-    def generate_answer(self, question: str, context: str) -> str:
-        ra_question: str = self._RAG_PROMPT.format(question=question, context=context)
-        return self.query_llm(ra_question)
+    def set_model(self, model: str):
+        # This should actually query the available models and check if the model is available,
+        # but the Ollama service does not support this API endpoint
+        self._model = model
+
+    def generate_answer(self, question: str, context: str, verbose: bool = False) -> str:
+        ra_question: str = self._rag_prompt.format(question=question, context=context, verbose=verbose)
+        return self._query_llm(ra_question, verbose=verbose)
 
 
 
