@@ -98,7 +98,7 @@ The RAG pipeline is configured via the `app/rag_config.yaml` file. The following
 - `retriever_config`:
     - `embedding_table`: Specifies the database table for embeddings.
     - `embedding_vector_length`: Defines the length of embedding vectors.
-    - `distance_measure`: Determines the method for calculating similarity between question and context embeddings.
+    - `distance_measure`: Determines the method for calculating similarity between question and context embeddings. Must be one of: "l2_distance", "cosine_distance", "max_inner_product"
     - `top_k_results`: Number of top results to retrieve for answering.
 - `augmentation_config`:
   - `context_separator`: Character used to separate context pieces.
